@@ -1,6 +1,10 @@
 name: Build & release
 on:
+  push:
+    branches:
+      - 'main'
   workflow_dispatch:
+
 env:
   BIN_NAME: Configurer.exe
 
