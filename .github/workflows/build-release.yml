@@ -11,12 +11,15 @@ env:
 jobs:
   version:
     runs-on: ubuntu-latest
+    outputs:
+      value: ${{ steps.get-version.value }}
     steps:
       - uses: actions/checkout@v4
       - name: set version in env
+        id: get-version
         run: |
           ver=$(python -c "import src.configurer; print(src.configurer.__version__)")
-          echo "VERSION=$ver" >> $GITHUB_ENV
+          echo "value=$ver" >> $GITHUB_OUTPUT
 
   build:
     runs-on: windows-latest
@@ -48,6 +51,8 @@ jobs:
       - build
     permissions:
       contents: write
+    env:
+      VERSION: ${{ needs.version.outputs.value }}
     steps:
       - name: download
         uses: actions/download-artifact@v4
