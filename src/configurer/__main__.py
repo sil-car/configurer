@@ -1,3 +1,4 @@
+import argparse
 import csv
 import subprocess
 import sys
@@ -13,6 +14,9 @@ from tkinter.ttk import Button
 from tkinter.ttk import Frame
 from tkinter.ttk import Label
 from win32com.shell import shell
+
+from . import __appname__
+from . import __version__
 
 
 class App:
@@ -247,15 +251,8 @@ class MainWindow(Frame):
         self.grid(column=0, row=0, sticky='nsew')
         # Configure widgets.
         self.app = app
-        self.info = Label(
-            self,
-            text="Configurer l'ordinateur : ",
-        )
-        self.run = Button(
-            self,
-            text="Lancer",
-            command=self.app.handle_run_clicked,
-        )
+        self.info = Label(self, text="Configurer l'ordinateur : ")
+        self.run = Button(self, text="Lancer", command=self.app.handle_run_clicked)
         self.status = Text(self)
         # Layout widgets.
         row = 0
@@ -270,8 +267,11 @@ class MainWindow(Frame):
 
 
 class Cli(App):
-    def __init__(self):
+    def __init__(self, args):
         super().__init__()
+        parser = argparse.ArgumentParser(prog=__appname__)
+        parser.add_argument('--version', action='version', version=f"%(prog)s v{__version__}")
+        parser.parse_args()
         self.msg_error("CLI mode not yet implemented.")
         sys.exit(1)
 
@@ -280,7 +280,7 @@ class Gui(App):
     def __init__(self):
         super().__init__()
         self.root = Tk()
-        self.root.title('ACATBA - Configurer')
+        self.root.title(f"ACATBA - {__appname__}")
         self.root.resizable(False, False)
         self.root.minsize(320, 180)
         # self.root.icon = app_dir / 'img' / 'icon.png'
