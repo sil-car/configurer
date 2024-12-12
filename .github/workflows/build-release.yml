@@ -19,7 +19,8 @@ jobs:
         id: get-version
         run: |
           ver=$(python -c "import src.configurer; print(src.configurer.__version__)")
-          echo "value=$ver" >> $GITHUB_OUTPUT
+          echo "value=$ver"
+          echo "value=$ver" >> "$GITHUB_OUTPUT"
 
   build:
     runs-on: windows-latest
