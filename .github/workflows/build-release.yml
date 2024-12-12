@@ -5,6 +5,15 @@ env:
   BIN_NAME: Configurer.exe
 
 jobs:
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: set version in env
+        run: |
+          ver=$(python -c "import src.configurer; print(src.configurer.__version__)")
+          echo "VERSION=$ver" >> $GITHUB_ENV
+
   build:
     runs-on: windows-latest
     steps:
@@ -19,7 +28,6 @@ jobs:
         pip install --upgrade pip
         pip install .[build]
     - name: Build with pyinstaller
-      id: pyinstaller
       run: |
         pyinstaller --clean configurer.spec
     - name: Upload artifact
@@ -43,4 +51,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           draft: true
+          tag: ${{ env.VERSION }}
           files: ${{ env.BIN_NAME }}
