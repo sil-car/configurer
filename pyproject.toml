@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "configurer"
+dependencies = [
+    "pywin32; os_name == 'nt'",
+]
+readme = "README.md"
+dynamic = ["version"]
+requires-python = ">=3.12"
+
+[project.optional-dependencies]
+build = ["pyinstaller"]
+
+[project.scripts]
+configurer = "configurer:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "configurer.__version__"}

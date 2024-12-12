@@ -1,0 +1,5 @@
+App,Fichier,Args
+LibreOffice,LibreOffice_*.msi,"UI_LANGS=fr,en_US /passive"
+Paratext,Paratext_*InstallerOffline.exe,/passive /norestart
+VLC,vlc-*.exe,/SILENT
+Zoom,ZoomInstallerFull.msi,/passive /norestart

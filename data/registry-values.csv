@@ -1,0 +1,10 @@
+Path,Key,Type,Value,Note
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsStore\WindowsUpdate,AutoDownload,REG_DWORD,2,Disable auto-update of Store apps
+HKEY_LOCAL_MACHINE\Software\Microsoft\WindowsUpdate\UX\Settings,BranchReadinessLevel,REG_DWORD,32,Semi-Annual updates track
+HKEY_USERS\S-1-5-20\Software\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config,DODownloadMode,REG_DWORD,1,Allow update-sharing over LAN ?
+HKEY_CURRENT_USER\SOFTWARE\Microsoft\DusmSvc\Profiles\{A4E15004-C564-45CA-98F6-F32E14BC8EAA},BackgroundRestriction,REG_DWORD,4,Restrict background data usage
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer,AicEnabled,REG_SZ,Anywhere,Turn off app recommendations
+HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Scan,DisableRemovableDriveScanning,REG_DWORD,0,Scan USB drives during full Windows Security scans
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\VideoSettings,AllowLowResolution,REG_DWORD,1,Prefer lower-resolution video playback (over network)
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Diagnostics\DiagTrack,ShowedToastAtLevel,REG_DWORD,0,Diagnostic data level (1 to 3)
+HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection,AllowTelemetry,REG_DWORD,1,Disallow telemetry data sharing
