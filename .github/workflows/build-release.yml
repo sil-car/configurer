@@ -22,14 +22,11 @@ jobs:
       id: pyinstaller
       run: |
         pyinstaller --clean configurer.spec
-        echo $BIN_NAME
-        dir .
-        dir dist
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: executable
-        path: dist/$BIN_NAME
+        path: dist/${{ env.BIN_NAME }}
         compression-level: 0
 
   release:
