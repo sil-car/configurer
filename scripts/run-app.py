@@ -8,7 +8,7 @@ import re
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parents[1]))
-import configurer
+from src.configurer.__main__ import main
 if __name__ == '__main__':
     sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
-    sys.exit(configurer.main())
+    sys.exit(main())

@@ -267,7 +267,7 @@ class MainWindow(Frame):
 
 
 class Cli(App):
-    def __init__(self, args):
+    def __init__(self):
         super().__init__()
         parser = argparse.ArgumentParser(prog=__appname__)
         parser.add_argument('--version', action='version', version=f"%(prog)s v{__version__}")
