@@ -27,7 +27,7 @@ class App:
         self.downloads_dir = Path.home() / 'Downloads'
         self.apps_dir = self.downloads_dir / 'apps'
         self.fonts_dir = self.downloads_dir / 'polices'
-        self.data_dir = Path(__file__).parent / 'data'
+        self.data_dir = Path(__file__).parents[2] / 'data'
         self.installer_args_data = self._get_installer_args_data()
         self.registry_values_data = self._get_registry_values_data()
 
@@ -269,16 +269,12 @@ class MainWindow(Frame):
 class Cli(App):
     def __init__(self):
         super().__init__()
-        parser = argparse.ArgumentParser(prog=__appname__)
-        parser.add_argument('--version', action='version', version=f"%(prog)s v{__version__}")
-        parser.parse_args()
         self.msg_error("CLI mode not yet implemented.")
         sys.exit(1)
 
 
 class Gui(App):
     def __init__(self):
-        super().__init__()
         self.root = Tk()
         self.root.title(f"ACATBA - {__appname__}")
         self.root.resizable(False, False)
@@ -290,6 +286,10 @@ class Gui(App):
         self.root.rowconfigure(0, weight=1)
 
         self.win = MainWindow(self)
+
+        # Init App only after self.win exists so that messages can be handled
+        # properly.
+        super().__init__()
         try:
             self.root.mainloop()
         except Exception as e:
@@ -343,7 +343,14 @@ class Gui(App):
 
 
 def main():
-    if len(sys.argv) == 1:
+    gui = True
+    parser = argparse.ArgumentParser(prog=__appname__)
+    parser.add_argument('--version', action='version', version=f"%(prog)s v{__version__}")
+    args = parser.parse_args()
+    if len(args) > 0:
+        gui = False
+
+    if gui:
         Gui()
     else:
         Cli()
