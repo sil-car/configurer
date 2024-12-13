@@ -60,6 +60,7 @@ jobs:
       - name: release
         uses: softprops/action-gh-release@v1
         with:
-          draft: true
+          draft: false
+          pre-release: true
           tag_name: v${{ needs.get-version.outputs.version }}
           files: ${{ env.BIN_NAME }}
