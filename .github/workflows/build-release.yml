@@ -31,14 +31,12 @@ jobs:
       with:
         python-version: '3.12'
         cache: pip
-    - name: Install dependencies
+    - name: Build with pyinstaller
       run: |
         python -m venv env
         ./env/Scripts/Activate.ps1
         python -m pip install --upgrade pip
         python -m pip install .[build]
-    - name: Build with pyinstaller
-      run: |
         pyinstaller --clean configurer.spec
     - name: Upload artifact
       uses: actions/upload-artifact@v4
