@@ -347,7 +347,7 @@ def main():
     parser.add_argument('--version', action='version', version=f"%(prog)s v{__version__}")
     parser.parse_args()
 
-    if len(sys.argv) > 0:
+    if len(sys.argv) > 1:
         Cli()
     else:
         Gui()
