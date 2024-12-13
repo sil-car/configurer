@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['env/bin/configurer'],
+    ['scripts/run-app.py'],
     pathex=[],
     binaries=[],
     datas=[('data', 'data')],
