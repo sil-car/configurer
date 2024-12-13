@@ -343,17 +343,14 @@ class Gui(App):
 
 
 def main():
-    gui = True
     parser = argparse.ArgumentParser(prog=__appname__)
     parser.add_argument('--version', action='version', version=f"%(prog)s v{__version__}")
-    args = parser.parse_args()
-    if len(args) > 0:
-        gui = False
+    parser.parse_args()
 
-    if gui:
-        Gui()
-    else:
+    if len(sys.argv) > 0:
         Cli()
+    else:
+        Gui()
 
 
 if __name__ == '__main__':
