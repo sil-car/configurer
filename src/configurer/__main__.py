@@ -1,5 +1,4 @@
 import argparse
-import sys
 
 from . import __appname__
 from . import __version__
