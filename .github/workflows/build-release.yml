@@ -27,7 +27,7 @@ jobs:
     - name: get app version
       id: get-version
       run: |
-          ver=$(python -c "import src.configurer; print(src.configurer.__version__)")
+          $ver = python -c "import src.configurer; print(src.configurer.__version__)"
           echo "version=$ver" >> "$Env:GITHUB_OUTPUT"
     - name: Build with pyinstaller
       run: |
