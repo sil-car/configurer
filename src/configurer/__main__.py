@@ -256,21 +256,22 @@ class MainWindow(Frame):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
         self.grid(column=0, row=0, sticky='nsew')
+        self.columnconfigure('all', uniform='uniform')
         # Configure widgets.
         self.app = app
         self.info = Label(self, text="Configurer l'ordinateur : ")
         self.run = Button(self, text="Lancer", command=self.app.handle_run_clicked)
-        self.space = Label(self)
+        # self.space = Label(self)
         self.status = Text(self)
         # Layout widgets.
         w_cols_total = 3
         w_cols_info = 1
         w_cols_run = 1
-        w_cols_space = w_cols_total - w_cols_info - w_cols_run
+        # w_cols_space = w_cols_total - w_cols_info - w_cols_run
         row = 0
         self.info.grid(column=0, row=row, columnspan=w_cols_info, sticky='w')
         self.run.grid(column=1, row=row, columnspan=w_cols_run, sticky='w')
-        self.space.grid(column=2, row=row, columnspan=w_cols_space)
+        # self.space.grid(column=2, row=row, columnspan=w_cols_space)
         row += 1
         self.status.grid(column=0, row=row, columnspan=w_cols_total, sticky='nsew')
 
