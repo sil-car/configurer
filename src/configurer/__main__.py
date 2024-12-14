@@ -3,17 +3,17 @@ import sys
 
 from . import __appname__
 from . import __version__
-from . import Cli
-from . import Gui
+from .app import Cli
+from .app import Gui
 
 
 def main():
     parser = argparse.ArgumentParser(prog=__appname__)
     parser.add_argument('--version', action='version', version=f"%(prog)s v{__version__}")
-    parser.parse_args()
+    args = parser.parse_args()
 
     if len(sys.argv) > 1:
-        Cli()
+        Cli(args)
     else:
         Gui()
 
