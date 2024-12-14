@@ -7,7 +7,7 @@ from pathlib import PurePath
 from tkinter import messagebox
 from tkinter import Tk
 
-from tkinter import Text
+from tkinter.scrolledtext import ScrolledText
 from tkinter.ttk import Button
 from tkinter.ttk import Frame
 from tkinter.ttk import Label
@@ -311,11 +311,7 @@ class Gui(App):
         print(full_text, file=sys.stderr)
 
     def msg_status(self, text):
-        numlines = int(self.win.status.index('end - 1 line').split('.')[0])
         self.win.status['state'] = 'normal'
-        if numlines > 5:
-            # Remove first line of text.
-            self.win.status.delete('1.0', '2.0')
         if self.win.status.index('end - 1 chars') != '1.0':
             self.win.status.insert('end', '\n')
         self.win.status.insert('end', text)
@@ -348,7 +344,7 @@ class MainWindow(Frame):
         self.app = app
         self.info = Label(self, text="Configurer l'ordinateur : ")
         self.run = Button(self, text="Lancer", command=self.app.handle_run_clicked)
-        self.status = Text(self)
+        self.status = ScrolledText(self)
         # Layout widgets.
         w_cols_total = 2
         w_cols_info = 1
