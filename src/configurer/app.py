@@ -239,7 +239,7 @@ class App:
 
     def _cmd(self, cmd_tokens):
         self.msg_debug(f"Exécution de : {cmd_tokens}")
-        return subprocess.run(cmd_tokens, text=True, encoding='cp437', capture_output=True)
+        return subprocess.run(cmd_tokens, text=True, encoding='cp437', capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
 
     def _pwsh(self, cmd_tokens):
         if cmd_tokens[0] != 'powershell.exe':
