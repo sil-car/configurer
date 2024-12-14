@@ -1,5 +1,5 @@
+from tkinter import WORD
 from tkinter.scrolledtext import ScrolledText
-from tkinter.tk import WORD
 from tkinter.ttk import Button
 from tkinter.ttk import Frame
 from tkinter.ttk import Label
