@@ -19,7 +19,7 @@ if sys.platform == 'win32':
 
 
 __appname__ = 'Configurer'
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 
 class App:
