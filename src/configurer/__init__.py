@@ -55,7 +55,7 @@ class App:
             else:
                 # NOTE: The returncode is identical for non-existent drive and
                 # for a drive already unencrypted.
-                pass
+                self.msg_status(f"BitLocker n'est pas activé sur {drive}")
 
     def ensure_admin_account(self):
         admin_user = 'Admin'
