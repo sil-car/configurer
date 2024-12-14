@@ -12,7 +12,7 @@ from tkinter.ttk import Button
 from tkinter.ttk import Frame
 from tkinter.ttk import Label
 
-if sys.platform == 'nt':
+if sys.platform == 'win32':
     import win32api
     import win32net
     from win32com.shell import shell
@@ -24,7 +24,7 @@ __version__ = '0.1.1'
 
 class App:
     def __init__(self):
-        if sys.platform == 'nt':
+        if sys.platform == 'win32':
             self.ensure_privileges()
             self._set_execution_policy_bypass()
 
