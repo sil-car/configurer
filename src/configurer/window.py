@@ -1,4 +1,5 @@
 from tkinter.scrolledtext import ScrolledText
+from tkinter.tk import WORD
 from tkinter.ttk import Button
 from tkinter.ttk import Frame
 from tkinter.ttk import Label
@@ -16,7 +17,7 @@ class Main(Frame):
         self.app = app
         self.info = Label(self, text="Configurer l'ordinateur : ")
         self.run = Button(self, text="Lancer", command=self.app.handle_run_clicked)
-        self.status = ScrolledText(self)
+        self.status = ScrolledText(self, wrap=WORD)
         # Layout widgets.
         w_cols_total = 2
         w_cols_info = 1

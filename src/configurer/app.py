@@ -247,15 +247,6 @@ class App:
         return self._cmd(cmd_tokens)
 
 
-class Cli(App):
-    def __init__(self, args):
-        super().__init__()
-        self.args = args
-        if self.args.run_config:
-            # Just run through full config directly.
-            self.set_config()
-
-
 class Gui(App):
     def __init__(self):
         self.root = Tk()
