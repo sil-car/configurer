@@ -54,6 +54,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           draft: false
-          pre-release: true
+          prerelease: true
           tag_name: v${{ needs.build.outputs.version }}
           files: ${{ env.BIN_NAME }}
