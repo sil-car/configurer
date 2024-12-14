@@ -24,10 +24,17 @@ class App:
         self.ensure_privileges()
         self._set_execution_policy_bypass()
 
+        # Set user folder locations.
         self.downloads_dir = Path.home() / 'Downloads'
         self.apps_dir = self.downloads_dir / 'apps'
         self.fonts_dir = self.downloads_dir / 'polices'
-        self.data_dir = Path(__file__).parents[2] / 'data'
+
+        # Set app folder locations.
+        if is_bundled():
+            self.root_dir = Path(sys._MEIPASS)
+        else:
+            self.root_dir = Path(__file__).parents[2]
+        self.data_dir = self.root_dir / 'data'
         self.installer_args_data = self._get_installer_args_data()
         self.registry_values_data = self._get_registry_values_data()
 
@@ -340,6 +347,13 @@ class Gui(App):
 
     def _format_proc_error(self, proc):
         return f"STDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
+
+
+def is_bundled():
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        return True
+    else:
+        return False
 
 
 def main():
