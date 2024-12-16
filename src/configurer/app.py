@@ -16,7 +16,7 @@ from . import is_bundled
 from . import bitlocker
 from .console import run_cmd
 from .console import run_pwsh
-from .errors import NonZeroExitError
+from .console import NonZeroExitError
 from .reg import reg_add_cmd
 from .window import Main
 
