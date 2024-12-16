@@ -1,0 +1,2 @@
+class ConfigurerException(Exception):
+    pass

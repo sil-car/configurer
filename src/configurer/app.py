@@ -1,5 +1,4 @@
 import csv
-import subprocess
 import sys
 import threading
 from pathlib import Path
@@ -14,6 +13,11 @@ if sys.platform == 'win32':
 
 from . import __appname__
 from . import is_bundled
+from . import bitlocker
+from .console import run_cmd
+from .console import run_pwsh
+from .errors import NonZeroExitError
+from .reg import reg_add_cmd
 from .window import Main
 
 
@@ -39,17 +43,13 @@ class App:
 
     def disable_bitlocker(self):
         for drive in ['C:', 'D:']:
-            status_p = self._cmd(['manage-bde', '-status', drive, '-ProtectionAsErrorLevel'])
-            if status_p.returncode == 0:
-                off_p = self._cmd(['manage-bde', '-off', drive])
-                if off_p.returncode == 0:
-                    self.msg_status(f"BitLocker désactivé sur {drive}")
-                else:
-                    detail = self._format_proc_error(off_p)
-                    self.msg_error("Échéc de désactivation de BitLocker", detail=detail)
+            if bitlocker.is_active(drive):
+                try:
+                    bitlocker.deactivate(drive)
+                except NonZeroExitError as e:
+                    self.msg_error("Échéc de désactivation de BitLocker", detail=e)
+                self.msg_status(f"BitLocker désactivé sur {drive}")
             else:
-                # NOTE: The returncode is identical for non-existent drive and
-                # for a drive already unencrypted.
                 self.msg_status(f"BitLocker n'est pas activé sur {drive}")
 
     def ensure_admin_account(self):
@@ -135,28 +135,33 @@ class App:
             self.msg_error("Un problème est arrivé lors de la configuration.", detail=e)
 
     def set_locale_etc(self):
-        self._pwsh(["Set-WinSystemLocale", "-SystemLocale" "fr-FR"])
-        self.msg_status("Langue vérifiée comme français")
-        self._pwsh(["Set-WinHomeLocation", "-GeoId", "55"])
-        self.msg_status("Emplacement vérifié comme Centrafrique")
+        try:
+            run_pwsh(["Set-WinSystemLocale", "-SystemLocale" "fr-FR"])
+            self.msg_status("Langue vérifiée comme français")
+            run_pwsh(["Set-WinHomeLocation", "-GeoId", "55"])
+            self.msg_status("Emplacement vérifié comme Centrafrique")
+        except NonZeroExitError as e:
+            self.msg_error("Échéc d'exécution de commande powershell", detail=e)
 
     def set_timezone(self):
-        current_tz = self._pwsh(['(Get-Timezone).Id'])
+        current_tz = run_pwsh(['(Get-Timezone).Id'])
         tz_id = "W. Central Africa Standard Time"
         if current_tz != tz_id:
-            self._pwsh(['Set-Timezone', '-Id', tz_id])
+            try:
+                run_pwsh(['Set-Timezone', '-Id', tz_id])
+            except NonZeroExitError as e:
+                self.msg_error("Échéc d'exécution de commande powershell", detail=e)
         self.msg_status("Fuseau horaire vérifié comme WAT.")
 
     def update_registry(self):
         for values in self.registry_values_data:
-            detail = '; '.join(values)
             try:
-                ec = self._set_registry_item(values)
-            except Exception:
-                self.msg_error('Échéc de modification du registre', detail=detail)
+                self._set_registry_item(values)
+            except NonZeroExitError:
                 continue
-            if ec != 0:
-                self.msg_error('Échéc de modification du registre', detail=detail)
+            except Exception as e:
+                detail = f"{'; '.join(values)}\n{e}"
+                self.msg_error("Erreur lors de la modificaiton du registre", detail=detail)
 
     def _get_csv_data(self, csvfilepath):
         values = []
@@ -210,16 +215,18 @@ class App:
     def _run_installer(self, filepath, args):
         cmd = [str(filepath), *args]
         self.msg_status(f"Installation de \"{' '.join(cmd)}\"")
-        p = self._cmd(cmd)
-        if p.returncode != 0:
-            self.msg_error(f"Échéc d'installation de {filepath}.")
+        try:
+            run_cmd(cmd)
+        except NonZeroExitError as e:
+            detail = f"{filepath}\n{e}"
+            self.msg_error("Échéc d'installation d'appli", detail=detail)
 
     def _set_execution_policy_bypass(self):
-        p = self._pwsh(["Set-ExecutionPolicy", "-ExecutionPolicy", "Bypass", "-Scope", "Process"])
-        if p.returncode != 0:
-            detail = self._format_proc_error(p)
-            self.msg_error("Échéc d'exécution", detail=detail)
-        return p.returncode
+        cmd = ["Set-ExecutionPolicy", "-ExecutionPolicy", "Bypass", "-Scope", "Process"]
+        try:
+            run_pwsh(cmd)
+        except NonZeroExitError as e:
+            self.msg_error("Erreur lors de la modification de 'ExecutionPolicy", detail=e)
 
     def _set_registry_item(self, values):
         path = values.get('Path')
@@ -231,20 +238,10 @@ class App:
             self.msg_error("Valeur invalide", detail=detail)
             return 1
         self.msg_status(f"{path} -> {key} [{dtype}] = {dvalue}")
-        p = self._cmd(['reg', 'add', path, '/f', '/v', key, '/t', dtype, '/d', dvalue])
-        if p.returncode != 0:
-            detail = self._format_proc_error(p)
-            self.msg_error("Échéc d'exécution", detail=detail)
-        return p.returncode
-
-    def _cmd(self, cmd_tokens):
-        self.msg_debug(f"Exécution de : {cmd_tokens}")
-        return subprocess.run(cmd_tokens, text=True, encoding='cp437', capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
-
-    def _pwsh(self, cmd_tokens):
-        if cmd_tokens[0] != 'powershell.exe':
-            cmd_tokens.insert(0, 'powershell.exe')
-        return self._cmd(cmd_tokens)
+        try:
+            reg_add_cmd(path, key, dtype, dvalue)
+        except NonZeroExitError as e:
+            self.msg_error("Échéc lors de la modification du registre", detail=e)
 
 
 class Gui(App):
@@ -303,9 +300,6 @@ class Gui(App):
             self.win.status.insert('end', '\n')
         self.win.status.insert('end', text)
         self.win.status['state'] = 'disabled'
-
-    def _format_proc_error(self, proc):
-        return f"STDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
 
     def _set_config(self, evt):
         self.set_config()
