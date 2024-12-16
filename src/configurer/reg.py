@@ -62,6 +62,6 @@ def set_key_value(path, name, data_type, value):
     dtype = encode_type(data_type)
     try:
         with winreg.OpenKey(base, key_path, access=winreg.KEY_WRITE) as key:
-            return winreg.SetValueEx(key, name, dtype, value)
+            winreg.SetValueEx(key, name, dtype, value)
     except FileNotFoundError:
         raise KeyNotFoundError(f"Clé non trouvée : {path}")

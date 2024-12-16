@@ -245,7 +245,10 @@ class App:
         #     reg.reg_add(path, name, data_type, value)
         # except NonZeroExitError as e:
         #     self.msg_error("Échéc lors de la modification du registre", detail=e)
-        reg.set_key_value(path, name, data_type, value)
+        if reg.get_key_value(path, name)[0] != value:
+            reg.set_key_value(path, name, data_type, value)
+        else:
+            self.msg_status("Valeur déjà configurée")
 
 
 class Gui(App):
