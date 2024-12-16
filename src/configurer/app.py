@@ -38,7 +38,7 @@ class App:
         logging.basicConfig(
             level=logging.DEBUG,
             filename=self.exe_parent_dir / f"{__appname__}.log",
-            mode='w',
+            filemode='w',
         )
         if __platform__ == 'win32':
             self.ensure_privileges()
