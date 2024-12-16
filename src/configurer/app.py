@@ -1,4 +1,5 @@
 import csv
+import logging
 import sys
 import threading
 from pathlib import Path
@@ -7,8 +8,8 @@ from tkinter import messagebox
 from tkinter import Tk
 
 from . import __appname__
+from . import __bundled__
 from . import __platform__
-from . import is_bundled
 from . import bitlocker
 from . import reg
 from .console import run_cmd
@@ -25,6 +26,20 @@ if __platform__ == 'win32':
 
 class App:
     def __init__(self):
+        # Set app folder locations.
+        if __bundled__:
+            self.root_dir = Path(sys._MEIPASS)
+            self.exe_parent_dir = Path(sys.executable).parent
+        else:
+            self.root_dir = Path(__file__).parents[2]
+            self.exe_parent_dir = self.root_dir
+
+        # Configure logging.
+        logging.basicConfig(
+            level=logging.DEBUG,
+            filename=self.exe_parent_dir / f"{__appname__}.log",
+            mode='w',
+        )
         if __platform__ == 'win32':
             self.ensure_privileges()
             self._set_execution_policy_bypass()
@@ -34,14 +49,11 @@ class App:
         self.apps_dir = self.downloads_dir / 'apps'
         self.fonts_dir = self.downloads_dir / 'polices'
 
-        # Set app folder locations.
-        if is_bundled():
-            self.root_dir = Path(sys._MEIPASS)
-        else:
-            self.root_dir = Path(__file__).parents[2]
         self.data_dir = self.root_dir / 'data'
         self.installer_args_data = self._get_installer_args_data()
+        logging.info(f"{self.installer_args_data=}")
         self.registry_values_data = self._get_registry_values_data()
+        logging.info(f"{self.registry_values_data=}")
 
     def disable_bitlocker(self):
         for drive in ['C:', 'D:']:
@@ -113,16 +125,20 @@ class App:
         return input(question)
 
     def msg_debug(self, text):
+        logging.debug(text)
         print(text, file=sys.stderr)
 
     def msg_error(self, text, detail=None):
+        logging.error(text)
         print(text, file=sys.stderr)
         if detail:
             print(detail, file=sys.stderr)
 
     def msg_status(self, text, detail=None):
+        logging.info(text)
         print(text)
         if detail:
+            logging.info(detail)
             print(detail)
 
     def set_config(self):
