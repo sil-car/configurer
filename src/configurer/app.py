@@ -14,6 +14,7 @@ from . import reg
 from .console import run_cmd
 from .console import run_pwsh
 from .console import NonZeroExitError
+from .errors import ConfigurerException
 from .window import Main
 
 if __platform__ == 'win32':
@@ -158,11 +159,12 @@ class App:
         for values in self.registry_values_data:
             try:
                 self._set_registry_item(values)
-            except NonZeroExitError:
+            except ConfigurerException:
                 continue
             except Exception as e:
-                detail = f"{'; '.join(values)}\n{e}"
-                self.msg_error("Erreur lors de la modificaiton du registre", detail=detail)
+                detail = f"{values}\n{e}"
+                self.msg_error("Erreur lors de la modification du registre", detail=detail)
+
 
     def _get_csv_data(self, csvfilepath):
         values = []

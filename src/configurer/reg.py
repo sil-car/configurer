@@ -37,7 +37,7 @@ def encode_base(input_base):
 def encode_type(input_type):
     data_types = {
         'REG_SZ': winreg.REG_SZ,
-        'DWORD': winreg.REG_DWORD,
+        'REG_DWORD': winreg.REG_DWORD,
     }
     encoded_type = data_types.get(input_type)
     if encoded_type is None:
