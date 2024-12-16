@@ -136,7 +136,7 @@ class App:
 
     def set_locale_etc(self):
         try:
-            run_pwsh(["Set-WinSystemLocale", "-SystemLocale" "fr-FR"])
+            run_pwsh(["Set-WinSystemLocale", "-SystemLocale", "fr-FR"])
             self.msg_status("Langue vérifiée comme français")
             run_pwsh(["Set-WinHomeLocation", "-GeoId", "55"])
             self.msg_status("Emplacement vérifié comme Centrafrique")
@@ -148,7 +148,7 @@ class App:
         tz_id = "W. Central Africa Standard Time"
         if current_tz != tz_id:
             try:
-                run_pwsh(['Set-Timezone', '-Id', tz_id])
+                run_pwsh(['Set-Timezone', '-Id', f'"{tz_id}"'])
             except NonZeroExitError as e:
                 self.msg_error("Échéc d'exécution de commande powershell", detail=e)
         self.msg_status("Fuseau horaire vérifié comme WAT.")
