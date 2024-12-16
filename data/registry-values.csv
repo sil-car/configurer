@@ -1,4 +1,4 @@
-Path,Key,Type,Value,Note
+Path,Name,Type,Value,Note
 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsStore\WindowsUpdate,AutoDownload,REG_DWORD,2,Disable auto-update of Store apps
 HKEY_LOCAL_MACHINE\Software\Microsoft\WindowsUpdate\UX\Settings,BranchReadinessLevel,REG_DWORD,32,Semi-Annual updates track
 HKEY_USERS\S-1-5-20\Software\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config,DODownloadMode,REG_DWORD,1,Allow update-sharing over LAN ?

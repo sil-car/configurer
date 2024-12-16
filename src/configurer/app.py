@@ -6,24 +6,25 @@ from pathlib import PurePath
 from tkinter import messagebox
 from tkinter import Tk
 
-if sys.platform == 'win32':
+from . import __appname__
+from . import __platform__
+from . import is_bundled
+from . import bitlocker
+from . import reg
+from .console import run_cmd
+from .console import run_pwsh
+from .console import NonZeroExitError
+from .window import Main
+
+if __platform__ == 'win32':
     import win32api
     import win32net
     from win32com.shell import shell
 
-from . import __appname__
-from . import is_bundled
-from . import bitlocker
-from .console import run_cmd
-from .console import run_pwsh
-from .console import NonZeroExitError
-from .reg import reg_add_cmd
-from .window import Main
-
 
 class App:
     def __init__(self):
-        if sys.platform == 'win32':
+        if __platform__ == 'win32':
             self.ensure_privileges()
             self._set_execution_policy_bypass()
 
@@ -230,18 +231,19 @@ class App:
 
     def _set_registry_item(self, values):
         path = values.get('Path')
-        key = values.get('Key')
-        dtype = values.get('Type')
-        dvalue = values.get('Value')
-        if None in [path, key, dtype, dvalue]:
+        name = values.get('Name')
+        data_type = values.get('Type')
+        value = values.get('Value')
+        if None in [path, name, data_type, value]:
             detail = f"Valeur invalide dans : {values}"
             self.msg_error("Valeur invalide", detail=detail)
             return 1
-        self.msg_status(f"{path} -> {key} [{dtype}] = {dvalue}")
-        try:
-            reg_add_cmd(path, key, dtype, dvalue)
-        except NonZeroExitError as e:
-            self.msg_error("Échéc lors de la modification du registre", detail=e)
+        self.msg_status(f"{path} -> {name} [{data_type}] = {value}")
+        # try:
+        #     reg.reg_add(path, name, data_type, value)
+        # except NonZeroExitError as e:
+        #     self.msg_error("Échéc lors de la modification du registre", detail=e)
+        reg.set_key_value(path, name, data_type, value)
 
 
 class Gui(App):

@@ -1,6 +1,7 @@
 import sys
 
 __appname__ = 'Configurer'
+__platform__ = sys.platform
 __version__ = '0.1.3'
 
 
