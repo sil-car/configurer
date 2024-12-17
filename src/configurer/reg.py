@@ -74,7 +74,7 @@ def set_key_value(path, name, data_type, value):
     try:
         with winreg.OpenKey(_encode_base(kp.base_key), kp.key_path, access=winreg.KEY_WRITE) as key:
             logging.debug(f"Opened key in write mode at: {kp.base_key}\\{kp.key_path}")
-            winreg.SetValueEx(key, name, _encode_type(data_type), value)
+            winreg.SetValueEx(key, name, 0, _encode_type(data_type), value)
     except FileNotFoundError:
         raise KeyNotFoundError(f"Clé non trouvée : {path}")
 
