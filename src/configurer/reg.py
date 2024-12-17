@@ -1,5 +1,5 @@
 import logging
-from pathlib import Path
+from pathlib import PureWindowsPath
 
 from . import __platform__
 from .console import run_cmd
@@ -11,9 +11,18 @@ if __platform__ == 'win32':
 class KeyNotFoundError(ConfigurerException):
     pass
 
-
 class UndefinedRegValueType(ConfigurerException):
     pass
+
+class KeyPath(PureWindowsPath):
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.base_key = None
+        self.key_path = str(self)
+        if len(self.parents) > 1:
+            self.base_key = str(self.parents[-2])
+        if self.base_key:
+            self.key_path = self.relative_to(self.base_key)
 
 
 def reg_add(path, name, data_type, value):
@@ -21,61 +30,36 @@ def reg_add(path, name, data_type, value):
 
 def create_key(path, name):
     logging.debug(f"Creating key: {path=}/{name=}")
-    base, key_path = split_base_from_path(path)
-    with winreg.OpenKey(base, key_path, access=winreg.KEY_WRITE) as key:
-        logging.debug(f"Opened key in write mode at: {base=}/{key_path}")
+    kp = KeyPath(path)
+    with winreg.OpenKey(kp.base_key, kp.key_path, access=winreg.KEY_WRITE) as key:
+        logging.debug(f"Opened key in write mode at: {kp.base_key=}/{kp.key_path=}")
         winreg.CreateKey(key, name)
-
-def encode_base(input_base):
-    hkey_bases = {
-        winreg.HKEY_CURRENT_USER: ['HKEY_CURRENT_USER', 'HKCU'],
-        winreg.HKEY_LOCAL_MACHINE: ['HKEY_LOCAL_MACHINE', 'HKLM'],
-        winreg.HKEY_USERS: ['HKEY_USERS']
-    }
-    for winreg_base, user_bases in hkey_bases.items():
-        if input_base in user_bases:
-            return winreg_base
-            break
-
-def encode_type(input_type):
-    data_types = {
-        'REG_SZ': winreg.REG_SZ,
-        'REG_DWORD': winreg.REG_DWORD,
-    }
-    encoded_type = data_types.get(input_type)
-    if encoded_type is None:
-        raise UndefinedRegValueType(f"Registry Value Type inconnu : {input_type}")
 
 def ensure_key(path, name):
     logging.debug(f"Ensuring key: {path=}/{name=}")
-    parent = get_key_parent_path(path)
-    if not key_exists(parent):
-        ensure_key(parent)
-    create_key(path, name)
+    kp = KeyPath(path)
+    if not key_exists(kp.parent, kp.name):
+        ensure_key(kp.parent, kp.name)
+    if not key_exists(path, name):
+        create_key(path, name)
 
-def get_key_parent_path(path):
-    parts = split_path(path)
-    return '\\'.join(parts[:-1])
-
-def get_key_value(full_path, name):
-    logging.debug(f"Getting key value {name=} at {full_path=}")
-    base, key_path = split_base_from_path(full_path)
+def get_key_value(path, name):
+    logging.debug(f"Getting key value at {path}\\{name}")
+    kp = KeyPath(path)
     try:
-        with winreg.OpenKey(base, key_path) as key:
-            logging.debug(f"Opened key in read mode at: {base=}/{key_path}")
+        with winreg.OpenKey(kp.base_key, kp.key_path) as key:
+            logging.debug(f"Opened key in read mode at: {kp.base_key}\\{kp.key_path}")
             value = winreg.QueryValueEx(key, name)
-            logging.debug(f"{value=}")
-            return value
     except FileNotFoundError:
         value = None
-        logging.debug(f"{value=}")
-        return None
+    logging.debug(f"{value=}")
+    return value
 
-def key_exists(path):
-    logging.debug(f"Checking if key exists: {path=}")
-    base, key_path = split_base_from_path(path)
+def key_exists(path, name):
+    logging.debug(f"Checking if key exists: {path}\\{name}")
+    path = KeyPath(path) / name
     try:
-        with winreg.OpenKey(base, key_path):
+        with winreg.OpenKey(path.base_key, path.key_path):
             pass
         logging.debug("Key exists")
         return True
@@ -84,22 +68,33 @@ def key_exists(path):
         return False
 
 def set_key_value(path, name, data_type, value):
-    logging.debug(f"Setting key {value=} of {data_type=} at {path=}/{name=}")
-    base, key_path = split_base_from_path(path)
-    dtype = encode_type(data_type)
+    logging.debug(f"Setting key at {path=}/{name=}, {data_type=}, to {value=}")
+    # base, key_path = _split_base_from_path(path)
+    kp = KeyPath(path)
+    dtype = _encode_type(data_type)
     try:
-        with winreg.OpenKey(base, key_path, access=winreg.KEY_WRITE) as key:
-            logging.debug(f"Opened key in write mode at: {base=}/{key_path}")
+        with winreg.OpenKey(kp.base_key, kp.key_path, access=winreg.KEY_WRITE) as key:
+            logging.debug(f"Opened key in write mode at: {kp.base_key}\\{kp.key_path}")
             winreg.SetValueEx(key, name, dtype, value)
     except FileNotFoundError:
         raise KeyNotFoundError(f"Clé non trouvée : {path}")
 
-def split_path(input_path):
-    return Path(input_path).parts
+def _encode_base(input_base):
+    hkey_bases = {
+        winreg.HKEY_CURRENT_USER: ['HKEY_CURRENT_USER', 'HKCU'],
+        winreg.HKEY_LOCAL_MACHINE: ['HKEY_LOCAL_MACHINE', 'HKLM'],
+        winreg.HKEY_USERS: ['HKEY_USERS']
+    }
+    for winreg_base, user_bases in hkey_bases.items():
+        if input_base in user_bases:
+            return winreg_base
 
-def split_base_from_path(input_path):
-    parts = split_path(input_path)
-    base = f"{parts[0]}"
-    path = '\\'.join(parts[1:])
-    logging.debug(f"{base=}; {path=}")
-    return base, path
+def _encode_type(input_type):
+    data_types = {
+        'REG_SZ': winreg.REG_SZ,
+        'REG_DWORD': winreg.REG_DWORD,
+    }
+    encoded_type = data_types.get(input_type)
+    if encoded_type is None:
+        raise UndefinedRegValueType(f"Registry Value Type inconnu : {input_type}")
+    return encoded_type
