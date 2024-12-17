@@ -22,7 +22,7 @@ class KeyPath(PureWindowsPath):
         if len(self.parents) > 1:
             self.base_key = str(self.parents[-2])
         if self.base_key:
-            self.key_path = self.relative_to(self.base_key)
+            self.key_path = str(self.relative_to(self.base_key))
 
 
 def reg_add(path, name, data_type, value):

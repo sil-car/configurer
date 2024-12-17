@@ -8,4 +8,4 @@ class TestKeyPath(unittest.TestCase):
         self.assertEqual(kp.base_key, 'HKEY_LOCAL_USER')
         self.assertEqual(kp.name, 'Windows')
         self.assertEqual(str(kp.parent), 'HKEY_LOCAL_USER\\Software')
-        self.assertEqual(str(kp.key_path), 'Software\\Windows')
+        self.assertEqual(kp.key_path, 'Software\\Windows')
