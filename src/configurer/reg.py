@@ -31,7 +31,7 @@ def reg_add(path, name, data_type, value):
 def create_key(path, name):
     logging.debug(f"Creating key: {path=}/{name=}")
     kp = KeyPath(path)
-    with winreg.OpenKey(kp.base_key, kp.key_path, access=winreg.KEY_WRITE) as key:
+    with winreg.OpenKey(_encode_base(kp.base_key), kp.key_path, access=winreg.KEY_WRITE) as key:
         logging.debug(f"Opened key in write mode at: {kp.base_key=}/{kp.key_path=}")
         winreg.CreateKey(key, name)
 
@@ -47,7 +47,7 @@ def get_key_value(path, name):
     logging.debug(f"Getting key value at {path}\\{name}")
     kp = KeyPath(path)
     try:
-        with winreg.OpenKey(kp.base_key, kp.key_path) as key:
+        with winreg.OpenKey(_encode_base(kp.base_key), kp.key_path) as key:
             logging.debug(f"Opened key in read mode at: {kp.base_key}\\{kp.key_path}")
             value = winreg.QueryValueEx(key, name)
     except FileNotFoundError:
@@ -59,7 +59,7 @@ def key_exists(path, name):
     logging.debug(f"Checking if key exists: {path}\\{name}")
     path = KeyPath(path) / name
     try:
-        with winreg.OpenKey(path.base_key, path.key_path):
+        with winreg.OpenKey(_encode_base(path.base_key), path.key_path):
             pass
         logging.debug("Key exists")
         return True
@@ -71,11 +71,10 @@ def set_key_value(path, name, data_type, value):
     logging.debug(f"Setting key at {path=}/{name=}, {data_type=}, to {value=}")
     # base, key_path = _split_base_from_path(path)
     kp = KeyPath(path)
-    dtype = _encode_type(data_type)
     try:
-        with winreg.OpenKey(kp.base_key, kp.key_path, access=winreg.KEY_WRITE) as key:
+        with winreg.OpenKey(_encode_base(kp.base_key), kp.key_path, access=winreg.KEY_WRITE) as key:
             logging.debug(f"Opened key in write mode at: {kp.base_key}\\{kp.key_path}")
-            winreg.SetValueEx(key, name, dtype, value)
+            winreg.SetValueEx(key, name, _encode_type(data_type), value)
     except FileNotFoundError:
         raise KeyNotFoundError(f"Clé non trouvée : {path}")
 
