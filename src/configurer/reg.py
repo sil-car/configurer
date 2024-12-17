@@ -69,7 +69,6 @@ def key_exists(path, name):
 
 def set_key_value(path, name, data_type, value):
     logging.debug(f"Setting key at {path=}/{name=}, {data_type=}, to {value=}")
-    # base, key_path = _split_base_from_path(path)
     kp = KeyPath(path)
     try:
         with winreg.OpenKey(_encode_base(kp.base_key), kp.key_path, access=winreg.KEY_WRITE) as key:
