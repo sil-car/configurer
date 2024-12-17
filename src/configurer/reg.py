@@ -52,7 +52,10 @@ def ensure_key(path, name):
 def ensure_key_value(path, name, data_type, value):
     kp = KeyPath(path)
     with winreg.CreateKeyEx(_encode_base(kp.base_key), kp.key_path) as key:
-        winreg.SetValueEx(key, name, 0, _encode_type(data_type), value)
+        logging.debug(f"Created/opened key at: {path}")
+        dtype = _encode_type(data_type)
+        logging.debug(f"Setting entry: {name=}; {dtype=}; {value=}")
+        winreg.SetValueEx(key, name, 0, dtype, value)
 
 def get_key_value(path, name):
     logging.debug(f"Getting key value at {path}\\{name}")
