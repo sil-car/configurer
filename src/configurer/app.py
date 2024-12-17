@@ -257,14 +257,14 @@ class App:
             self.msg_error("Valeur invalide", detail=detail)
             return 1
         self.msg_status(f"{path} -> {name} [{data_type}] = {value}")
-        reg.ensure_key(path, name)
-        if not reg.get_key_value(path, name) or reg.get_key_value(path, name)[0] != value:
-            try:
-                reg.set_key_value(path, name, data_type, value)
-            except Exception as e:
-                self.msg_error("Échéc de définition de la valeur", detail=e)
-        else:
-            self.msg_status("Valeur déjà configurée")
+        reg.ensure_key_value(path, name, data_type, value)
+        # if not reg.get_key_value(path, name) or reg.get_key_value(path, name)[0] != value:
+        #     try:
+        #         reg.set_key_value(path, name, data_type, value)
+        #     except Exception as e:
+        #         self.msg_error("Échéc de définition de la valeur", detail=e)
+        # else:
+        #     self.msg_status("Valeur déjà configurée")
 
 
 class Gui(App):

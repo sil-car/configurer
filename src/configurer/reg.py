@@ -28,20 +28,31 @@ class KeyPath(PureWindowsPath):
 def reg_add(path, name, data_type, value):
     return run_cmd(['reg', 'add', path, '/f', '/v', name, '/t', data_type, '/d', value])
 
-def create_key(path, name):
-    logging.debug(f"Creating key: {path=}/{name=}")
+# def create_key(path, name):
+#     logging.debug(f"Creating key: {path=}\\{name=}")
+#     kp = KeyPath(path)
+#     with winreg.OpenKey(_encode_base(kp.base_key), kp.key_path, access=winreg.KEY_WRITE) as key:
+#         logging.debug(f"Opened key in write mode at: {kp.base_key=}/{kp.key_path=}")
+#         winreg.CreateKeyEx(key, name)
+
+def create_key(path):
+    logging.debug(f"Creating key: {path}")
     kp = KeyPath(path)
-    with winreg.OpenKey(_encode_base(kp.base_key), kp.key_path, access=winreg.KEY_WRITE) as key:
-        logging.debug(f"Opened key in write mode at: {kp.base_key=}/{kp.key_path=}")
-        winreg.CreateKey(key, name)
+    with winreg.CreateKeyEx(_encode_base(kp.base_key), kp.key_path):
+        pass
 
 def ensure_key(path, name):
-    logging.debug(f"Ensuring key: {path=}/{name=}")
+    logging.debug(f"Ensuring key: {path=}\\{name=}")
     kp = KeyPath(path)
     if not key_exists(kp.parent, kp.name):
         ensure_key(kp.parent, kp.name)
     if not key_exists(path, name):
         create_key(path, name)
+
+def ensure_key_value(path, name, data_type, value):
+    kp = KeyPath(path)
+    with winreg.CreateKeyEx(_encode_base(kp.base_key), kp.key_path) as key:
+        winreg.SetValueEx(key, name, 0, _encode_type(data_type), value)
 
 def get_key_value(path, name):
     logging.debug(f"Getting key value at {path}\\{name}")
