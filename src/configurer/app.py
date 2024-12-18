@@ -39,6 +39,7 @@ class App:
             level=logging.DEBUG,
             filename=self.exe_parent_dir / f"{__appname__}.log",
             filemode='w',
+            format='%(levelname)s: %(message)s',
         )
         if __platform__ == 'win32':
             self.ensure_privileges()
@@ -281,10 +282,6 @@ class Gui(App):
         self.root.rowconfigure(0, weight=1)
 
         self.win = Main(self)
-
-        # Init App only after self.win exists so that messages can be handled
-        # properly.
-        # super().__init__()
         try:
             self.root.mainloop()
         except Exception as e:
