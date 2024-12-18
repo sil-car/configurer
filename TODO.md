@@ -1,0 +1,5 @@
+- test locale & location settings via registry entries
+- add keyboard configuration
+- install multilingual keyboard
+- convert timezone settings to python code
+- convert bitlocker settings to python code

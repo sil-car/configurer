@@ -1,4 +1,4 @@
 # Configurer
 
-Simplifier la configuration d'un ordinateurs Windows selon les besoins de
+Simplifier la configuration d'un ordinateur Windows selon les besoins de
 l'ACATBA.

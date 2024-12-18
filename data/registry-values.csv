@@ -1,10 +1,39 @@
 Path,Name,Type,Value,Note
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Diagnostics\DiagTrack,ShowedToastAtLevel,REG_DWORD,0,Diagnostic data level (1 to 3)
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\VideoSettings,AllowLowResolution,REG_DWORD,1,Prefer lower-resolution video playback (over network)
+HKEY_CURRENT_USER\SOFTWARE\Microsoft\DusmSvc\Profiles\{A4E15004-C564-45CA-98F6-F32E14BC8EAA},BackgroundRestriction,REG_DWORD,4,Restrict background data usage
+HKCU\Control Panel\International,iCountry,REG_SZ,236,dial code
+HKCU\Control Panel\International,iCurrency,REG_SZ,3,
+HKCU\Control Panel\International,iDate,REG_SZ,1,
+HKCU\Control Panel\International,iFirstDayOfWeek,REG_SZ,0,monday
+HKCU\Control Panel\International,iFirstWeekOfYear,REG_SZ,2,
+HKCU\Control Panel\International,iMeasure,REG_SZ,0,metric
+HKCU\Control Panel\International,iNegCurr,REG_SZ,8,parentheses ?
+HKCU\Control Panel\International,iPaperSize,REG_SZ,9,A4 ?
+HKCU\Control Panel\International,iTime,REG_SZ,1,
+HKCU\Control Panel\International,iTLZero,REG_SZ,1,
+HKCU\Control Panel\International,Locale,REG_SZ,0000040C,French
+HKCU\Control Panel\International,LocaleName,REG_SZ,fr-FR,
+HKCU\Control Panel\International,s1159,REG_SZ,,label for « AM »
+HKCU\Control Panel\International,s2359,REG_SZ,,label for « PM »
+HKCU\Control Panel\International,sCurrency,REG_SZ,€,
+HKCU\Control Panel\International,sDecimal,REG_SZ,",",
+HKCU\Control Panel\International,sLanguage,REG_SZ,FRA,
+HKCU\Control Panel\International,sList,REG_SZ,;,"used in Excel, for example"
+HKCU\Control Panel\International,sLongDate,REG_SZ,dddd d MMMM yyyy,
+HKCU\Control Panel\International,sMonDecimalSep,REG_SZ,",",
+HKCU\Control Panel\International,sMonThousandSep,REG_SZ, ,single space
+HKCU\Control Panel\International,sShortDate,REG_SZ,dd/MM/yyyy,
+HKCU\Control Panel\International,sShortTime,REG_SZ,HH:mm,
+HKCU\Control Panel\International,sThousand,REG_SZ, ,single space
+HKCU\Control Panel\International,sTimeFormat,REG_SZ,HH:mm:ss,
+HKCU\Control Panel\International\Geo,Name,REG_SZ,CF,
+HKCU\Control Panel\International\Geo,Nation,REG_SZ,55,
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer,AicEnabled,REG_SZ,Anywhere,Turn off app recommendations
 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsStore\WindowsUpdate,AutoDownload,REG_DWORD,2,Disable auto-update of Store apps
 HKEY_LOCAL_MACHINE\Software\Microsoft\WindowsUpdate\UX\Settings,BranchReadinessLevel,REG_DWORD,32,Semi-Annual updates track
-HKEY_USERS\S-1-5-20\Software\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config,DODownloadMode,REG_DWORD,1,Allow update-sharing over LAN ?
-HKEY_CURRENT_USER\SOFTWARE\Microsoft\DusmSvc\Profiles\{A4E15004-C564-45CA-98F6-F32E14BC8EAA},BackgroundRestriction,REG_DWORD,4,Restrict background data usage
-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer,AicEnabled,REG_SZ,Anywhere,Turn off app recommendations
-HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Scan,DisableRemovableDriveScanning,REG_DWORD,0,Scan USB drives during full Windows Security scans
-HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\VideoSettings,AllowLowResolution,REG_DWORD,1,Prefer lower-resolution video playback (over network)
-HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Diagnostics\DiagTrack,ShowedToastAtLevel,REG_DWORD,0,Diagnostic data level (1 to 3)
 HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection,AllowTelemetry,REG_DWORD,1,Disallow telemetry data sharing
+HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Scan,DisableRemovableDriveScanning,REG_DWORD,0,Scan USB drives during full Windows Security scans
+HKLM\SYSTEM\CurrentControlSet\Control\Nls\Language,Default,REG_SZ,040c,System default langage
+HKLM\SYSTEM\CurrentControlSet\Control\Nls\Language,InstallLanguage,REG_SZ,040c,Language used for app installation ?
+HKEY_USERS\S-1-5-20\Software\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config,DODownloadMode,REG_DWORD,1,Allow update-sharing over LAN ?

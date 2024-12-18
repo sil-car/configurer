@@ -143,24 +143,30 @@ class App:
             print(detail)
 
     def set_config(self):
-        try:
-            self.ensure_admin_account()
-            self.set_locale_etc()
-            self.set_timezone()
-            self.update_registry()
-            self.disable_bitlocker()
-            self.install_apps()
-        except Exception as e:
-            self.msg_error("Un problème est arrivé lors de la configuration.", detail=e)
+        for func in [
+            self.ensure_admin_account,
+            self.update_registry, # incl. setting locale, etc.
+            # self.set_locale_etc,
+            self.set_timezone,
+            self.disable_bitlocker,
+            self.install_apps,
+        ]:
+            try:
+                logging.debug(f"Running '{func}'")
+                func()
+            except Exception as e:
+                logging.error(f"Failed to run '{func}': {e}")
+                self.msg_error("Un problème est arrivé lors de la configuration.", detail=e)
 
-    def set_locale_etc(self):
-        try:
-            run_pwsh(["Set-WinSystemLocale", "-SystemLocale", "fr-FR"])
-            self.msg_status("Langue vérifiée comme français")
-            run_pwsh(["Set-WinHomeLocation", "-GeoId", "55"])
-            self.msg_status("Emplacement vérifié comme Centrafrique")
-        except NonZeroExitError as e:
-            self.msg_error("Échéc d'exécution de commande powershell", detail=e)
+    # def set_locale_etc(self):
+    #     # Ref: https://renenyffenegger.ch/notes/Windows/registry/tree/HKEY_CURRENT_USER/Control-Panel/International/index
+    #     try:
+    #         run_pwsh(["Set-WinSystemLocale", "-SystemLocale", "fr-FR"])
+    #         self.msg_status("Langue vérifiée comme français")
+    #         run_pwsh(["Set-WinHomeLocation", "-GeoId", "55"])
+    #         self.msg_status("Emplacement vérifié comme Centrafrique")
+    #     except NonZeroExitError as e:
+    #         self.msg_error("Échéc d'exécution de commande powershell", detail=e)
 
     def set_timezone(self):
         current_tz = run_pwsh(['(Get-Timezone).Id'])
