@@ -54,6 +54,9 @@ def ensure_key_value(path, name, data_type, value):
     with winreg.CreateKeyEx(_encode_base(kp.base_key), kp.key_path) as key:
         logging.debug(f"Created/opened key at: {path}")
         dtype = _encode_type(data_type)
+        if dtype == winreg.REG_DWORD:
+            # String value can't be converted to REG_DWORD by winreg.
+            value = int(value)
         logging.debug(f"Setting entry: {name=}; {dtype=}; {value=}")
         winreg.SetValueEx(key, name, 0, dtype, value)
 
