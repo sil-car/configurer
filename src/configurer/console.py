@@ -13,6 +13,8 @@ def run_cmd(cmd_tokens):
 
 def run_pwsh(cmd_tokens):
     if cmd_tokens[0] != 'powershell.exe':
+        cmd_tokens.insert(0, 'Bypass')
+        cmd_tokens.insert(0, '-ExecutionPolicy')
         cmd_tokens.insert(0, 'powershell.exe')
     return run_cmd(cmd_tokens)
 

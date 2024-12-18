@@ -247,12 +247,12 @@ class App:
             detail = f"{filepath}\n{e}"
             self.msg_error("Échéc d'installation d'appli", detail=detail)
 
-    def _set_execution_policy_bypass(self):
-        cmd = ["Set-ExecutionPolicy", "-ExecutionPolicy", "Bypass", "-Scope", "Process"]
-        try:
-            run_pwsh(cmd)
-        except NonZeroExitError as e:
-            self.msg_error("Erreur lors de la modification de 'ExecutionPolicy", detail=e)
+    # def _set_execution_policy_bypass(self):
+    #     cmd = ["Set-ExecutionPolicy", "-ExecutionPolicy", "Bypass", "-Scope", "Process"]
+    #     try:
+    #         run_pwsh(cmd)
+    #     except NonZeroExitError as e:
+    #         self.msg_error("Erreur lors de la modification de 'ExecutionPolicy", detail=e)
 
     def _set_registry_item(self, values):
         path = values.get('Path')
