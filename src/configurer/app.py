@@ -255,16 +255,16 @@ class App:
         if None in [path, name, data_type, value]:
             detail = f"Valeur invalide dans : {values}"
             self.msg_error("Valeur invalide", detail=detail)
-            return 1
-        self.msg_status(f"{path} -> {name} [{data_type}] = {value}")
-        reg.ensure_key_value(path, name, data_type, value)
-        # if not reg.get_key_value(path, name) or reg.get_key_value(path, name)[0] != value:
-        #     try:
-        #         reg.set_key_value(path, name, data_type, value)
-        #     except Exception as e:
-        #         self.msg_error("Échéc de définition de la valeur", detail=e)
-        # else:
-        #     self.msg_status("Valeur déjà configurée")
+            return
+
+        self.msg_status(f"Définition de : {path}\\{name} [{data_type}] = {value}")
+        try:
+            reg.ensure_key_value(path, name, data_type, value)
+        except ConfigurerException as e:
+            self.msg_error("Échéc de définition de la valeur", detail=e)
+            return
+        finally:
+            self.msg_status("Valeur définie avec succès.")
 
 
 class Gui(App):
