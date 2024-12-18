@@ -1,7 +1,9 @@
 import sys
 
 def is_bundled():
-    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):  # pyinstaller
+        return True
+    elif '__compiled__' in globals():  # nuitka
         return True
     else:
         return False

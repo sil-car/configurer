@@ -28,7 +28,11 @@ class App:
     def __init__(self):
         # Set app folder locations.
         if __bundled__:
-            self.root_dir = Path(sys._MEIPASS)
+            if sys._MEIPASS:
+                self.root_dir = Path(sys._MEIPASS)
+            elif '__compiled__' in globals():
+                global __compiled__
+                self.root_dir = Path(__compiled__.containing_dir)
             self.exe_parent_dir = Path(sys.executable).parent
         else:
             self.root_dir = Path(__file__).parents[2]
