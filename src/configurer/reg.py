@@ -2,7 +2,6 @@ import logging
 from pathlib import PureWindowsPath
 
 from . import __platform__
-from .console import run_cmd
 from .errors import ConfigurerException
 if __platform__ == 'win32':
     import winreg
@@ -23,10 +22,6 @@ class KeyPath(PureWindowsPath):
             self.base_key = str(self.parents[-2])
         if self.base_key:
             self.key_path = str(self.relative_to(self.base_key))
-
-
-def reg_add(path, name, data_type, value):
-    return run_cmd(['reg', 'add', path, '/f', '/v', name, '/t', data_type, '/d', value])
 
 def ensure_key_value(path, name, data_type, value):
     kp = KeyPath(path)
