@@ -201,10 +201,7 @@ class App:
                 for row in reader:
                     values.append(row)
         else:
-            m = f"\"{csvfilepath}\" n'existe pas."
-            logging.info(m)
-            if self.win:
-                self.msg_status(m)
+            logging.info(f"\"{csvfilepath}\" n'existe pas.")
         return values
 
     def _get_files_by_type(self, parent_dir, suffix):
