@@ -269,6 +269,7 @@ class App:
 
 class Gui(App):
     def __init__(self):
+        super().__init__()
         self.root = Tk()
         self.root.title(f"ACATBA - {__appname__}")
         self.root.resizable(False, False)
@@ -283,7 +284,7 @@ class Gui(App):
 
         # Init App only after self.win exists so that messages can be handled
         # properly.
-        super().__init__()
+        # super().__init__()
         try:
             self.root.mainloop()
         except Exception as e:
@@ -315,7 +316,7 @@ class Gui(App):
         full_text = text
         if detail:
             full_text += f"\n{detail}"
-        print(full_text, file=sys.stderr)
+        logging.error(full_text)
 
     def msg_status(self, text):
         self.win.status['state'] = 'normal'
@@ -323,6 +324,7 @@ class Gui(App):
             self.win.status.insert('end', '\n')
         self.win.status.insert('end', text)
         self.win.status['state'] = 'disabled'
+        logging.info(text)
 
     def _set_config(self, evt):
         self.set_config()
