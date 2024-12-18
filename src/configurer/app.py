@@ -43,7 +43,7 @@ class App:
         )
         if __platform__ == 'win32':
             self.ensure_privileges()
-            self._set_execution_policy_bypass()
+            # self._set_execution_policy_bypass()
 
         # Set user folder locations.
         self.downloads_dir = Path.home() / 'Downloads'
