@@ -47,18 +47,14 @@ class App:
         )
         if __platform__ == 'win32':
             self.ensure_privileges()
-            # self._set_execution_policy_bypass()
 
         # Set user folder locations.
         self.downloads_dir = Path.home() / 'Downloads'
         self.apps_dir = self.downloads_dir / 'apps'
         self.fonts_dir = self.downloads_dir / 'polices'
-
         self.data_dir = self.root_dir / 'data'
-        self.installer_args_data = self._get_installer_args_data()
-        logging.info(f"{self.installer_args_data=}")
-        self.registry_values_data = self._get_registry_values_data()
-        logging.info(f"{self.registry_values_data=}")
+        self.installer_csv_name = 'installer-args.csv'
+        self.registry_csv_name = 'registry-values.csv'
 
     def disable_bitlocker(self):
         for drive in ['C:', 'D:']:
@@ -117,6 +113,10 @@ class App:
             sys.exit(1)
 
     def install_apps(self):
+        self.installer_args_data = self._get_installer_args_data()
+        if self.installer_args_data is None:
+            self.msg_status(f"\"{self.installer_csv_name}\" n'existe pas.")
+        logging.debug(f"{self.installer_args_data=}")
         if self.apps_dir.is_dir():
             for app in self._get_installers():
                 ans = self.msg_ask(f"Installer {app.name} ?")
@@ -183,6 +183,10 @@ class App:
         self.msg_status("Fuseau horaire vérifié comme WAT.")
 
     def update_registry(self):
+        self.registry_values_data = self._get_registry_values_data()
+        if self.registry_values_data is None:
+            self.msg_status(f"\"{self.registry_csv_name}\" n'existe pas.")
+        logging.debug(f"{self.registry_values_data=}")
         for values in self.registry_values_data:
             try:
                 self._set_registry_item(values)
@@ -202,20 +206,21 @@ class App:
                     values.append(row)
         else:
             logging.info(f"\"{csvfilepath}\" n'existe pas.")
+            values = None
         return values
 
     def _get_files_by_type(self, parent_dir, suffix):
         return [p for p in parent_dir.iterdir() if p.suffix == suffix]
 
     def _get_installer_args_data(self):
-        return self._get_csv_data(self.data_dir / 'installer-args.csv')
+        return self._get_csv_data(self.data_dir / self.installer_csv_name)
 
     def _get_installers(self):
         exts = ('.exe', '.msi', '.zip')
         return [p for p in self.apps_dir.iterdir() if p.suffix in exts]
 
     def _get_registry_values_data(self):
-        return self._get_csv_data(self.data_dir / 'registry-values.csv')
+        return self._get_csv_data(self.data_dir / self.registry_csv_name)
 
     def _install_app(self, installer):
         self.msg_debug(f"{installer=}")
@@ -250,13 +255,6 @@ class App:
         except NonZeroExitError as e:
             detail = f"{filepath}\n{e}"
             self.msg_error("Échéc d'installation d'appli", detail=detail)
-
-    # def _set_execution_policy_bypass(self):
-    #     cmd = ["Set-ExecutionPolicy", "-ExecutionPolicy", "Bypass", "-Scope", "Process"]
-    #     try:
-    #         run_pwsh(cmd)
-    #     except NonZeroExitError as e:
-    #         self.msg_error("Erreur lors de la modification de 'ExecutionPolicy", detail=e)
 
     def _set_registry_item(self, values):
         path = values.get('Path')
